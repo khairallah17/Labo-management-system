@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.16220735785953178" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #F1FAEE;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Labo.Controllers.ControllerSalle">
+  <items>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+         <children>
+            <Button fx:id="buttonMateriel" layoutY="134.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Création" textFill="WHITE" />
+            <Button fx:id="buttonEtudiant" layoutY="174.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Matériels" textFill="WHITE" />
+            <Button fx:id="buttonFournisseur" layoutY="255.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Fournisseur" textFill="WHITE" />
+            <Button fx:id="buttonquitter" layoutY="364.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #E63946;" text="Quitter" textFill="WHITE" />
+            <Button fx:id="buttonSalle" layoutY="214.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Salle" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+         <children>
+            <Separator layoutX="-5.0" layoutY="51.0" opacity="0.49" prefHeight="4.0" prefWidth="504.0" />
+            <TextField layoutX="10.0" layoutY="13.0" prefHeight="25.0" prefWidth="337.0" promptText="Chercher...." style="-fx-background-color: #fff; -fx-background-radius: 100px;" />
+            <Button fx:id="buttonChercher" layoutX="385.0" layoutY="11.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="chercher" textFill="WHITE">
+               <font>
+                  <Font name="Montserrat Regular" size="11.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="150.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../assets/search-interface-symbol.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label layoutX="136.0" layoutY="70.0" prefHeight="25.0" prefWidth="227.0" text="réservation de la salle">
+               <font>
+                  <Font name="Montserrat Bold" size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="nomreservation" layoutX="38.0" layoutY="161.0" prefHeight="25.0" prefWidth="174.0" promptText="Nom du prof responsable" style="-fx-border-radius: 100px;" />
+            <TextField fx:id="nombresReservation" layoutX="38.0" layoutY="198.0" prefHeight="25.0" prefWidth="174.0" promptText="Nombre des étudiants" style="-fx-border-radius: 100px;" />
+            <Button fx:id="buttonAjouter" layoutX="385.0" layoutY="334.0" mnemonicParsing="false" onAction="#addReservation" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="Ajouter" textFill="WHITE">
+               <font>
+                  <Font name="Montserrat Regular" size="11.0" />
+               </font>
+            </Button>
+            <DatePicker fx:id="dateReservation" layoutX="38.0" layoutY="235.0" promptText="date de reservation" style="-fx-border-radius: 100px;" />
+            <Button fx:id="buttonAjouter1" layoutX="270.0" layoutY="334.0" mnemonicParsing="false" onAction="#getMaterielList" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="Ajouter" textFill="WHITE">
+               <font>
+                  <Font name="Montserrat Regular" size="11.0" />
+               </font>
+            </Button>
+            <ListView fx:id="listeSalle" layoutX="250.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>

@@ -4,17 +4,24 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
 import Labo.DB.DatabaseConnection;
+import Labo.classes.Materiels;
 
 import java.sql.Statement;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -59,6 +66,21 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
     private TextField materielReference;
 
     @FXML
+    private TableView<Materiels> materielsTable;
+
+    @FXML
+    private TableColumn<Materiels, String> nameTable;
+
+    @FXML
+    private TableColumn<Materiels, Integer> numbreTable;
+
+    @FXML
+    private TableColumn<Materiels, String> referenceTable;
+
+    @FXML
+    private TableColumn<Materiels, String> statusTable;
+
+    @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
         root = FXMLLoader.load(getClass().getResource(ui));
         stage = (Stage)((Node) (event.getSource())).getScene().getWindow();
@@ -67,10 +89,7 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         stage.show();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-    }
-
+    
     public void addMateriel(){
         String nom = materielNom.getText();
         String reference = materielReference.getText();
@@ -126,4 +145,42 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         }
     }
 
+    public ObservableList<Materiels> getMaterielList() {
+
+        Connection cnx = DatabaseConnection.getConnection();
+        ObservableList<Materiels> list = FXCollections.observableArrayList();
+
+        String stmt = "SELECT * FROM materiels.materiel";
+
+        try{
+            PreparedStatement pstmt = cnx.prepareStatement(stmt);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                list.add(new Materiels(rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Module"), rs.getString("Status")));
+            }
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        
+        return list;
+    }
+    
+    ObservableList<Materiels> listmat;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Connection cnx = DatabaseConnection.getConnection();
+
+
+
+        nameTable.setCellValueFactory(new PropertyValueFactory<Materiels, String>("Nom"));
+        referenceTable.setCellValueFactory(new PropertyValueFactory<Materiels, String>("Reference"));
+        numbreTable.setCellValueFactory(new PropertyValueFactory<Materiels, Integer>("Quantite"));
+        statusTable.setCellValueFactory(new PropertyValueFactory<Materiels, String>("Status"));
+    
+        listmat = getMaterielList();
+    }
 }

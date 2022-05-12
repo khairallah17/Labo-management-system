@@ -8,8 +8,10 @@ import javafx.event.EventHandler;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -19,7 +21,7 @@ import javax.swing.table.TableModel;
 import com.mysql.cj.xdevapi.Statement;
 
 import Labo.DB.DatabaseConnection;
-import Labo.Materiels.Materiels;
+import Labo.classes.Salle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -65,19 +67,18 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
     private TextField nomreservation;
 
     @FXML
-    private TableView<TableModel> materielsTable;
+    private TableColumn<Salle, Date> salleDate;
 
     @FXML
-    private TableColumn<TableModel, String> nameTable;
+    private TableColumn<Salle, String> salleNom;
 
     @FXML
-    private TableColumn<TableModel, Integer> numbreTable;
+    private TableColumn<Salle, Integer> salleNombre;
 
     @FXML
-    private TableColumn<TableModel, String> referenceTable;
+    private TableView<Salle> salleTable;
 
-    @FXML
-    private TableColumn<TableModel, String> statusTable;
+    ObservableList<Salle> list = FXCollections.observableArrayList();
 
     @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
@@ -142,42 +143,39 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
         }
     }
 
-    public ObservableList<Materiels> getMaterielList() {
+    public ObservableList<Salle> getMaterielList() {
+
+        list.clear();
 
         Connection cnx = DatabaseConnection.getConnection();
-        ObservableList<Materiels> list = FXCollections.observableArrayList();
 
-        String stmt = "SELECT * FROM materiels.materiel";
+        String stmt = "SELECT * FROM materiels.reservationsalle";
 
         try{
             PreparedStatement pstmt = cnx.prepareStatement(stmt);
             ResultSet rs = pstmt.executeQuery();
 
-            Materiels mat;
-
             while(rs.next()){
-            //     System.out.println(rs.getString("Nom"));
-                // System.out.println(rs.getString("Nom"));
-                mat = new Materiels(rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Module"), rs.getString("Status"));
-                break;
-                // list.add(new Materiels(rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Module"), rs.getString("Status")));
+                System.out.println(rs.getString("Nom"));
+                list.add(new Salle(rs.getString("Nom"), rs.getInt("Nombresetudiant"), rs.getDate("Date")));
+                salleTable.setItems(list);
             }
+            pstmt.close();
+            rs.close();
 
-
-            // mat.getInfo();
         } catch(Exception e){
             e.printStackTrace();
         }
-        
+
         return list;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // TODO Auto-generated method stub
-        // ObservableList<Materiels> list = 
         getMaterielList();
 
-        // materielsTable.setItems(list);
+        salleNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        salleNombre.setCellValueFactory(new PropertyValueFactory<>("nombreEtudiant"));
+        salleDate.setCellValueFactory(new PropertyValueFactory<>("reservation"));
     }
 }

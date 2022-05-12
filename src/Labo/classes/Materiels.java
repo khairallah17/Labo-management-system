@@ -1,4 +1,6 @@
-package Labo.Materiels;
+package Labo.classes;
+
+import javax.swing.table.TableModel;
 
 public class Materiels {
   protected String nom;

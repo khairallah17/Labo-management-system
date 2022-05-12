@@ -1,31 +1,54 @@
 package Labo.classes;
-
-import javax.swing.table.TableModel;
-
 public class Materiels {
-  protected String nom;
-  protected int nombre;
-  protected String reference;
-  protected String module;
-  protected String status;
+  String nom;
+  int quantite;
+  String reference;
+  String status;
   
   public Materiels(){
       this.nom = null;
       this.reference = null;
-      this.module = null;
-      this.nombre = 0;
+      this.quantite = 0;
       this.status = null;
   }
 
-  public Materiels(String nom, String reference, int nombre, String module, String status){
+  public Materiels(String nom, String reference, int quantite, String status){
     this.nom = nom;
     this.reference = reference;
-    this.module = module;
-    this.nombre = nombre;
+    this.quantite = quantite;
     this.status = status;
   }
 
-  public void getInfo(){
-    System.out.println(this.nom + "," + this.reference + "," + this.nombre + "," + this.module +","+ this.status);
+  public void setNom(String nom) {
+      this.nom = nom;
   }
+
+  public void setQuantite(int quantite) {
+      this.quantite = quantite;
+  }
+  
+  public void setReference(String reference) {
+      this.reference = reference;
+  }
+
+  public void setStatus(String status) {
+      this.status = status;
+  }
+
+  public String getNom() {
+      return nom;
+  }
+
+  public int getQuantite() {
+      return quantite;
+  }
+
+  public String getReference() {
+      return reference;
+  }
+
+  public String getStatus() {
+      return status;
+  }
+
 }

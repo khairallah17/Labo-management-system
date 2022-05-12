@@ -157,13 +157,13 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
             ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                list.add(new Materiels(rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Module"), rs.getString("Status")));
+                list.add(new Materiels(rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Status")));
+                materielsTable.setItems(list);
             }
 
         } catch(Exception e){
             e.printStackTrace();
         }
-
         
         return list;
     }
@@ -172,15 +172,11 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Connection cnx = DatabaseConnection.getConnection();
+        getMaterielList();
 
-
-
-        nameTable.setCellValueFactory(new PropertyValueFactory<Materiels, String>("Nom"));
-        referenceTable.setCellValueFactory(new PropertyValueFactory<Materiels, String>("Reference"));
-        numbreTable.setCellValueFactory(new PropertyValueFactory<Materiels, Integer>("Quantite"));
-        statusTable.setCellValueFactory(new PropertyValueFactory<Materiels, String>("Status"));
-    
-        listmat = getMaterielList();
+        nameTable.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        referenceTable.setCellValueFactory(new PropertyValueFactory<>("reference"));
+        numbreTable.setCellValueFactory(new PropertyValueFactory<>("quantite"));
+        statusTable.setCellValueFactory(new PropertyValueFactory<>("status"));
     }
 }

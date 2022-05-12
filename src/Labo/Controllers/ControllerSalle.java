@@ -156,7 +156,6 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
             ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                System.out.println(rs.getString("Nom"));
                 list.add(new Salle(rs.getString("Nom"), rs.getInt("Nombresetudiant"), rs.getDate("Date")));
                 salleTable.setItems(list);
             }

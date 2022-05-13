@@ -1,24 +1,37 @@
 package Labo.Controllers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ResourceBundle;
+
+import javax.naming.spi.InitialContextFactory;
 
 import com.mysql.cj.xdevapi.Statement;
 
 import Labo.DB.DatabaseConnection;
+import Labo.classes.Fournisseur;
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 
-public class ControllerFournisseur implements EventHandler<ActionEvent>{
+public class ControllerFournisseur implements EventHandler<ActionEvent>, Initializable{
     protected Stage stage;
     protected Scene scene;
     protected Parent root;
@@ -50,6 +63,21 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>{
 
     @FXML
     private TextField fournisseurNumero;
+    
+    @FXML
+    private TableView<Fournisseur> fourniesseurTable;
+
+    @FXML
+    private TableColumn<Fournisseur, String> cinTable;
+
+    @FXML
+    private TableColumn<Fournisseur, String> emailTable;
+
+    @FXML
+    private TableColumn<Fournisseur, String> nomCompletTable;
+
+    @FXML
+    private TableColumn<Fournisseur, Integer> telTable;
 
     @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
@@ -113,5 +141,39 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>{
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public ObservableList<Fournisseur> getFournisseurList(){
+
+        Connection cnx = DatabaseConnection.getConnection();
+        ObservableList<Fournisseur> list = FXCollections.observableArrayList();
+
+        String stmt = "SELECT * FROM materiels.fournisseur";
+
+        try{
+            PreparedStatement pstmt = cnx.prepareStatement(stmt);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                list.add(new Fournisseur(rs.getString("NomComplet"), rs.getString("Email"), rs.getString("CIN"), rs.getInt("Numero")));
+                fourniesseurTable.setItems(list);
+            }
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // TODO Auto-generated method stub
+        getFournisseurList();
+
+        nomCompletTable.setCellValueFactory(new PropertyValueFactory<>("nomComplet"));
+        emailTable.setCellValueFactory(new PropertyValueFactory<>("email"));
+        cinTable.setCellValueFactory(new PropertyValueFactory<>("cin"));
+        telTable.setCellValueFactory(new PropertyValueFactory<>("tel"));
     }
 }

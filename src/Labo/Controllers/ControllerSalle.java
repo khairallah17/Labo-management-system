@@ -143,7 +143,7 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
         }
     }
 
-    public ObservableList<Salle> getMaterielList() {
+    public ObservableList<Salle> getSalleList() {
 
         list.clear();
 
@@ -171,7 +171,7 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        getMaterielList();
+        getSalleList();
 
         salleNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         salleNombre.setCellValueFactory(new PropertyValueFactory<>("nombreEtudiant"));

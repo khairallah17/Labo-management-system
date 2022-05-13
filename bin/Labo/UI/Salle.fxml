@@ -17,8 +17,8 @@
   <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
-            <Button fx:id="buttonMateriel" layoutY="134.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Création" textFill="WHITE" />
-            <Button fx:id="buttonEtudiant" layoutY="174.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Matériels" textFill="WHITE" />
+            <Button fx:id="buttonMateriel" layoutY="134.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Ajout" textFill="WHITE" />
+            <Button fx:id="buttonEtudiant" layoutY="174.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Emprunt" textFill="WHITE" />
             <Button fx:id="buttonFournisseur" layoutY="255.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Fournisseur" textFill="WHITE" />
             <Button fx:id="buttonquitter" layoutY="364.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #E63946;" text="Quitter" textFill="WHITE" />
             <Button fx:id="buttonSalle" layoutY="214.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Salle" textFill="WHITE" />
@@ -53,7 +53,7 @@
                </font>
             </Button>
             <DatePicker fx:id="dateReservation" layoutX="38.0" layoutY="235.0" promptText="date de reservation" style="-fx-border-radius: 100px;" />
-            <Button fx:id="buttonAjouter1" layoutX="270.0" layoutY="334.0" mnemonicParsing="false" onAction="#getMaterielList" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="Ajouter" textFill="WHITE">
+            <Button fx:id="buttonAjouter1" layoutX="270.0" layoutY="334.0" mnemonicParsing="false" onAction="#getSalleList" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="Ajouter" textFill="WHITE">
                <font>
                   <Font name="Montserrat Regular" size="11.0" />
                </font>

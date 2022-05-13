@@ -3,11 +3,15 @@ package Labo.Controllers;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import Labo.DB.DatabaseConnection;
+import Labo.classes.Materiels;
+import Labo.classes.Reservation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,7 +20,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -60,13 +67,23 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
     @FXML
     private TextField nomEtudiant;
 
-    ObservableList<?> list = FXCollections.observableArrayList("item1","item2","item3");
-    
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // TODO Auto-generated method stub
-        materielEtudiant.setItems(list);    
-    }
+    @FXML
+    private TableView<Reservation> studentTable;
+
+    @FXML
+    private TableColumn<Materiels, String> nomStudent;
+
+    @FXML
+    private TableColumn<Materiels, String> studentCard;
+
+    @FXML
+    private TableColumn<Materiels, Date> studentEnd;
+
+    @FXML
+    private TableColumn<Materiels, String> studentMaterial;
+
+    @FXML
+    private TableColumn<Materiels, Date> studentStart;
 
     @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
@@ -131,6 +148,62 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void fetchMateriels(){
+        ObservableList<String> list = FXCollections.observableArrayList();
+        
+        Connection cnx = DatabaseConnection.getConnection();
+        String stmt = "SELECT Nom FROM materiels.materiel";
+
+        try{
+            PreparedStatement pstmt = cnx.prepareStatement(stmt);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                list.add(rs.getString("Nom"));
+            }
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        materielEtudiant.setItems(list);
+        
+    }
+
+    public void fillTable(){
+        Connection cnx = DatabaseConnection.getConnection();
+        ObservableList<Reservation> list = FXCollections.observableArrayList();
+
+        String stmt = "SELECT * FROM materiels.reservationmateriel";
+
+        try{
+            PreparedStatement pstmt = cnx.prepareStatement(stmt);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                list.add(new Reservation(rs.getString("Nom"), rs.getString("CarteEtudiant"), rs.getString("NomMateriel"), rs.getDate("DateDebut"), rs.getDate("DateFin")));
+                studentTable.setItems(list);
+            }
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // TODO Auto-generated method stub 
+
+        fetchMateriels();
+        fillTable();
+
+        nomStudent.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        studentCard.setCellValueFactory(new PropertyValueFactory<>("cin"));
+        studentMaterial.setCellValueFactory(new PropertyValueFactory<>("materiel"));
+        studentStart.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
+        studentEnd.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
     }
 
 }

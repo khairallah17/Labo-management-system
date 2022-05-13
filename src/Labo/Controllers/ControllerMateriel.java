@@ -22,6 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -89,6 +90,14 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         stage.show();
     }
 
+    public void getSelectedRow(MouseEvent event){
+        int index = materielsTable.getSelectionModel().getFocusedIndex();
+
+        if (index <= -1)
+            return ;
+        
+        // materielNom.setText(arg0);
+    }
     
     public void addMateriel(){
         String nom = materielNom.getText();

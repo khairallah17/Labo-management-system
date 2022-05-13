@@ -18,10 +18,10 @@
   <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
-            <Button fx:id="buttonMateriel" layoutY="139.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Création" textFill="WHITE" />
+            <Button fx:id="buttonMateriel" layoutY="139.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Ajout" textFill="WHITE" />
             <Button fx:id="buttonSalle" layoutY="219.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Salle" textFill="WHITE" />
             <Button fx:id="buttonquitter" layoutY="364.0" mnemonicParsing="false" onAction="#handle" prefHeight="30.0" prefWidth="98.0" style="-fx-background-color: #E63946;" text="Quitter" textFill="WHITE" />
-            <Button fx:id="buttonEtudant" layoutX="-2.0" layoutY="179.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Matériels" textFill="WHITE" />
+            <Button fx:id="buttonEtudant" layoutX="-2.0" layoutY="179.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Emprunt" textFill="WHITE" />
             <Button fx:id="buttonFournisseur" layoutY="259.0" mnemonicParsing="false" onAction="#handle" prefHeight="29.0" prefWidth="98.0" style="-fx-background-color: #457B9D;" text="Fournisseur" textFill="WHITE" />
          </children>
       </AnchorPane>
@@ -29,28 +29,28 @@
          <children>
             <Separator layoutX="-5.0" layoutY="51.0" opacity="0.49" prefHeight="4.0" prefWidth="504.0" />
             <TextField layoutX="10.0" layoutY="13.0" prefHeight="25.0" prefWidth="337.0" promptText="Chercher...." style="-fx-background-color: #fff; -fx-background-radius: 100px;" />
-            <Label layoutX="150.0" layoutY="71.0" prefHeight="30.0" prefWidth="210.0" text="réservation de  matériel" textAlignment="CENTER">
+            <Label layoutX="150.0" layoutY="71.0" prefHeight="30.0" prefWidth="210.0" text="Emprunt de  matériel" textAlignment="CENTER">
                <font>
                   <Font name="Montserrat Bold" size="16.0" />
                </font>
             </Label>
-            <TextField fx:id="carteEtudiant" layoutX="10.0" layoutY="171.0" prefHeight="25.0" prefWidth="146.0" promptText="Carte Etudiant" />
-            <TextField fx:id="nomEtudiant" layoutX="10.0" layoutY="138.0" prefHeight="25.0" prefWidth="146.0" promptText="Nom" />
-            <DatePicker fx:id="debutEtudiant" layoutX="10.0" layoutY="249.0" prefHeight="25.0" prefWidth="146.0" promptText="date de debut" />
-            <DatePicker fx:id="finEtudiant" layoutX="10.0" layoutY="289.0" prefHeight="25.0" prefWidth="146.0" promptText="date de fin" />
+            <TextField fx:id="carteEtudiant" layoutX="10.0" layoutY="169.0" prefHeight="25.0" prefWidth="146.0" promptText="Carte Etudiant" />
+            <TextField fx:id="nomEtudiant" layoutX="10.0" layoutY="136.0" prefHeight="25.0" prefWidth="146.0" promptText="Nom" />
+            <DatePicker fx:id="debutEtudiant" layoutX="10.0" layoutY="247.0" prefHeight="25.0" prefWidth="146.0" promptText="date de debut" />
+            <DatePicker fx:id="finEtudiant" layoutX="10.0" layoutY="287.0" prefHeight="25.0" prefWidth="146.0" promptText="date de fin" />
             <Button fx:id="buttonAjouter" layoutX="375.0" layoutY="340.0" mnemonicParsing="false" onAction="#reservationEtudiant" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="Ajouter" textFill="WHITE">
                <font>
                   <Font name="Montserrat Regular" size="11.0" />
                </font>
             </Button>
-            <ComboBox fx:id="materielEtudiant" layoutX="10.0" layoutY="210.0" prefHeight="25.0" prefWidth="146.0" promptText="Materiels" />
-            <TableView layoutX="179.0" layoutY="131.0" prefHeight="183.0" prefWidth="301.0">
+            <ComboBox fx:id="materielEtudiant" layoutX="10.0" layoutY="208.0" prefHeight="25.0" prefWidth="146.0" promptText="Materiels" />
+            <TableView fx:id="studentTable" layoutX="179.0" layoutY="131.0" prefHeight="183.0" prefWidth="301.0">
               <columns>
-                <TableColumn prefWidth="36.0" text="Nom" />
-                <TableColumn prefWidth="56.0" text="CIN" />
-                  <TableColumn prefWidth="65.0" text="Matériel" />
-                  <TableColumn prefWidth="68.0" text="date debut" />
-                  <TableColumn prefWidth="75.0" text="date de fin" />
+                <TableColumn fx:id="nomStudent" prefWidth="36.0" text="Nom" />
+                <TableColumn fx:id="studentCard" prefWidth="56.0" text="carte" />
+                  <TableColumn fx:id="studentMaterial" prefWidth="65.0" text="Matériel" />
+                  <TableColumn fx:id="studentStart" prefWidth="68.0" text="date debut" />
+                  <TableColumn fx:id="studentEnd" prefWidth="75.0" text="date de fin" />
               </columns>
             </TableView>
             <Button fx:id="buttonChercher" layoutX="375.0" layoutY="11.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="chercher" textFill="WHITE">

@@ -96,16 +96,17 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         if (index <= -1)
             return ;
         
-        // materielNom.setText(arg0);
+        materielNom.setText(nameTable.getCellData(index).toString());
+        materielNombre.setText(numbreTable.getCellData(index).toString());
+        materielReference.setText(referenceTable.getCellData(index).toString());
     }
     
     public void addMateriel(){
         String nom = materielNom.getText();
         String reference = materielReference.getText();
-        String module = materielModule.getText();
         int quantity = Integer.parseInt(materielNombre.getText());
         
-        String query = "INSERT INTO `materiels`.`materiel` (`Nom`, `Reference`, `Quantite`, `Module`, `Status`) VALUES ('"+nom+"', '"+reference+"', '"+quantity+"', '"+module+"', 'disponible');";
+        String query = "INSERT INTO `materiels`.`materiel` (`Nom`, `Reference`, `Quantite`, `Status`) VALUES ('"+nom+"', '"+reference+"', '"+quantity+"', 'disponible');";
 
         try{
             Connection cnx = DatabaseConnection.getConnection();

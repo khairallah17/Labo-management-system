@@ -33,11 +33,10 @@
                   <Font name="Montserrat Bold" size="16.0" />
                </font>
             </Label>
-            <TextField fx:id="materielNom" layoutX="23.0" layoutY="140.0" prefHeight="25.0" prefWidth="175.0" promptText="Nom" />
-            <TextField fx:id="materielNombre" layoutX="24.0" layoutY="182.0" prefHeight="25.0" prefWidth="175.0" promptText="Nombre" />
-            <TextField fx:id="materielReference" layoutX="23.0" layoutY="222.0" prefHeight="25.0" prefWidth="175.0" promptText="Reference" />
-            <TextField fx:id="materielModule" layoutX="23.0" layoutY="261.0" prefHeight="25.0" prefWidth="175.0" promptText="Module" />
-            <TableView fx:id="materielsTable" layoutX="241.0" layoutY="136.0" prefHeight="154.0" prefWidth="234.0">
+            <TextField fx:id="materielNom" layoutX="23.0" layoutY="160.0" prefHeight="25.0" prefWidth="175.0" promptText="Nom" />
+            <TextField fx:id="materielNombre" layoutX="24.0" layoutY="202.0" prefHeight="25.0" prefWidth="175.0" promptText="Nombre" />
+            <TextField fx:id="materielReference" layoutX="23.0" layoutY="242.0" prefHeight="25.0" prefWidth="175.0" promptText="Reference" />
+            <TableView fx:id="materielsTable" layoutX="241.0" layoutY="136.0" onMouseClicked="#getSelectedRow" prefHeight="154.0" prefWidth="234.0">
               <columns>
                 <TableColumn fx:id="nameTable" prefWidth="49.0" text="Nom" />
                 <TableColumn fx:id="numbreTable" prefWidth="62.0" text="Nombre" />

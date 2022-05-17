@@ -81,6 +81,8 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
     @FXML
     private TableColumn<Materiels, String> statusTable;
 
+    MouseEvent event;
+
     @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
         root = FXMLLoader.load(getClass().getResource(ui));
@@ -90,15 +92,17 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         stage.show();
     }
 
-    public void getSelectedRow(MouseEvent event){
+    public int getSelectedRow(){
         int index = materielsTable.getSelectionModel().getFocusedIndex();
 
         if (index <= -1)
-            return ;
+            return 0;
         
         materielNom.setText(nameTable.getCellData(index).toString());
         materielNombre.setText(numbreTable.getCellData(index).toString());
         materielReference.setText(referenceTable.getCellData(index).toString());
+
+        return index;
     }
     
     public void addMateriel(){
@@ -117,6 +121,8 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        updateTable();
     }
 
     @Override
@@ -167,7 +173,7 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
             ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                list.add(new Materiels(rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Status")));
+                list.add(new Materiels(rs.getInt("Id"),rs.getString("Nom"), rs.getString("Reference"), Integer.parseInt(rs.getString("Quantite")), rs.getString("Status")));
                 materielsTable.setItems(list);
             }
 
@@ -177,8 +183,70 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         
         return list;
     }
-    
-    ObservableList<Materiels> listmat;
+
+    public int getSpecificItem(String nom){
+        ObservableList<Materiels> list = getMaterielList();
+
+        for (Materiels materiels : list) {
+            if(materiels.getNom().equals(nom))
+                return materiels.getId();
+        }
+
+        return 0;
+    }
+
+    public void deleteElement(){
+        int index = getSelectedRow();
+
+        String nom = nameTable.getCellData(index).toString();
+
+        int id = getSpecificItem(nom);
+
+        String query = "DELETE FROM `materiels`.`materiel` WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
+    }
+
+    public void modifieElement(){
+        int index = getSelectedRow();
+
+        String nom = nameTable.getText();
+        String reference = materielReference.getText();
+        int quantite = Integer.parseInt(materielNombre.getText());
+        
+        int id = getSpecificItem(nom);
+
+        String query = "UPDATE `materiels`.`materiel` SET `Nom` = '"+nom+"', `Reference` = '"+reference+"', `Quantite` = '"+quantite+"', `Status` = 'disponible' WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
+    }
+
+    public void updateTable(){
+        getMaterielList();
+
+        nameTable.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        referenceTable.setCellValueFactory(new PropertyValueFactory<>("reference"));
+        numbreTable.setCellValueFactory(new PropertyValueFactory<>("quantite"));
+        statusTable.setCellValueFactory(new PropertyValueFactory<>("status"));
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

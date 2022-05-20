@@ -9,6 +9,13 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner.DateEditor;
+
+import com.mysql.cj.xdevapi.Statement;
+
+import java.time.LocalDateTime;
+
 import Labo.DB.DatabaseConnection;
 import Labo.classes.Materiels;
 import Labo.classes.Reservation;
@@ -24,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -84,7 +92,9 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
 
     @FXML
     private TableColumn<Materiels, Date> studentStart;
-
+    
+    MouseEvent event;
+    
     @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
         root = FXMLLoader.load(getClass().getResource(ui));
@@ -92,6 +102,31 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void updateTable(){
+        fillTable();
+
+        nomStudent.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        studentCard.setCellValueFactory(new PropertyValueFactory<>("cin"));
+        studentMaterial.setCellValueFactory(new PropertyValueFactory<>("materiel"));
+        studentStart.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
+        studentEnd.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
+    }
+
+    public int getSelectedRow(){
+        int index = studentTable.getSelectionModel().getFocusedIndex();
+
+        if (index <= -1)
+            return 0;
+        
+        nomEtudiant.setText(nomStudent.getCellData(index).toString());
+        carteEtudiant.setText(studentCard.getCellData(index).toString());
+        debutEtudiant.setValue(studentStart.getCellData(index).toLocalDate());
+        finEtudiant.setValue(studentEnd.getCellData(index).toLocalDate());
+        materielEtudiant.setValue(studentMaterial.getCellData(index).toString());
+
+        return index;
     }
     
     @Override
@@ -130,6 +165,14 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
         }
     }
 
+    public void clearTextFields(){
+        nomEtudiant.setText("");
+        carteEtudiant.setText("");
+        materielEtudiant.setValue("");
+        debutEtudiant.setValue(LocalDate.now());
+        finEtudiant.setValue(LocalDate.now());
+    }
+
     public void reservationEtudiant() {
         String nom = nomEtudiant.getText();
         String carte = carteEtudiant.getText();
@@ -145,9 +188,13 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
             pstmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "reservation avec succes");
+            clearTextFields();
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        updateTable();
     }
 
     public void fetchMateriels(){
@@ -172,24 +219,90 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
         
     }
 
-    public void fillTable(){
-        Connection cnx = DatabaseConnection.getConnection();
-        ObservableList<Reservation> list = FXCollections.observableArrayList();
-
-        String stmt = "SELECT * FROM materiels.reservationmateriel";
-
+    public ObservableList<Reservation> fillTable(){
+        ObservableList<Reservation> listmat = FXCollections.observableArrayList();
+        
+        String query = "SELECT * FROM materiels.reservationmateriel";
+        
         try{
-            PreparedStatement pstmt = cnx.prepareStatement(stmt);
+            Connection cnx = DatabaseConnection.getConnection();
+            java.sql.Statement stmt = cnx.createStatement();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                list.add(new Reservation(rs.getString("Nom"), rs.getString("CarteEtudiant"), rs.getString("NomMateriel"), rs.getDate("DateDebut"), rs.getDate("DateFin")));
-                studentTable.setItems(list);
+                listmat.add(new Reservation(rs.getInt("Id"),rs.getString("Nom"), rs.getString("CarteEtudiant"), rs.getString("NomMateriel"), rs.getDate("DateDebut"), rs.getDate("DateFin")));
+                studentTable.setItems(listmat);
             }
 
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        return listmat;
+    }
+
+    public int getSpecificItem(String nom){
+
+        ObservableList<Reservation> list = fillTable();
+
+        for (Reservation materiels : list) {
+            if(materiels.getNom().equals(nom))
+                return materiels.getId();
+        }
+
+        return 0;
+    }
+
+    public void deleteElement(){
+        int index = getSelectedRow();
+
+        String nom = nomStudent.getCellData(index).toString();
+
+        int id = getSpecificItem(nom);
+
+        String query = "DELETE FROM `materiels`.`reservationmateriel` WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel Supprimer");
+            clearTextFields();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
+    }
+
+    public void modifieElement(){
+        String nom = nomEtudiant.getText();
+        String carte = carteEtudiant.getText();
+        Object materiel = materielEtudiant.getValue();
+        LocalDate debut = debutEtudiant.getValue();
+        LocalDate fin = finEtudiant.getValue();
+
+        int index = getSelectedRow();
+
+        int id = getSpecificItem(nomStudent.getCellData(index).toString());
+
+        String query = "UPDATE `materiels`.`reservationmateriel` SET `Nom` = '"+nom+"', `CarteEtudiant` = '"+carte+"', `NomMateriel` = '"+materiel+"', `DateDebut` = '"+debut+"', `DateFin` = '"+fin+"' WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            java.sql.Statement stmt = cnx.createStatement();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel modifier");
+            clearTextFields();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
     }
 
     @Override
@@ -197,13 +310,7 @@ public class ControllerEtudiant implements EventHandler<ActionEvent>, Initializa
         // TODO Auto-generated method stub 
 
         fetchMateriels();
-        fillTable();
-
-        nomStudent.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        studentCard.setCellValueFactory(new PropertyValueFactory<>("cin"));
-        studentMaterial.setCellValueFactory(new PropertyValueFactory<>("materiel"));
-        studentStart.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
-        studentEnd.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
+        updateTable();
     }
 
 }

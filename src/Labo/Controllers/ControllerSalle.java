@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
 
 import com.mysql.cj.xdevapi.Statement;
@@ -29,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -78,6 +80,8 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
     @FXML
     private TableView<Salle> salleTable;
 
+    MouseEvent event;
+
     ObservableList<Salle> list = FXCollections.observableArrayList();
 
     @FXML
@@ -87,6 +91,19 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public int getSelectedRow(){
+        int index = salleTable.getSelectionModel().getFocusedIndex();
+
+        if (index <= -1)
+            return 0;
+        
+        nomreservation.setText(salleNom.getCellData(index));
+        nombresReservation.setText(salleNombre.getCellData(index).toString());
+        dateReservation.setValue(salleDate.getCellData(index).toLocalDate());
+
+        return index;
     }
 
     @Override
@@ -125,6 +142,17 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
         }
     }
 
+    public int getSpecificItem(String nom){
+        ObservableList<Salle> list = getSalleList();
+
+        for (Salle salle : list) {
+            if(salle.getNom().equals(nom))
+                return salle.getId();
+        }
+
+        return 0;
+    }
+
     public void addReservation() {
         String nom = nomreservation.getText();
         int nombre = Integer.parseInt(nombresReservation.getText());
@@ -138,9 +166,12 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
             pstmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "salle reserver");
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        updateTable();
     }
 
     public ObservableList<Salle> getSalleList() {
@@ -156,7 +187,7 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
             ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                list.add(new Salle(rs.getString("Nom"), rs.getInt("Nombresetudiant"), rs.getDate("Date")));
+                list.add(new Salle(rs.getInt("id"), rs.getString("Nom"), rs.getInt("Nombresetudiant"), rs.getDate("Date")));
                 salleTable.setItems(list);
             }
             pstmt.close();
@@ -169,12 +200,64 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
         return list;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void deleteElement(){
+        int index = getSelectedRow();
+
+        String nom = salleNom.getCellData(index).toString();
+
+        int id = getSpecificItem(nom);
+
+        String query = "DELETE FROM `materiels`.`reservationsalle` WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+            JOptionPane.showMessageDialog(null, "salle Supprimer");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+       
+        updateTable();
+    }
+
+    public void modifieElement(){
+        String nom = nomreservation.getText();
+        LocalDate date = dateReservation.getValue();
+        int qt = Integer.parseInt(nombresReservation.getText());
+
+        int index = getSelectedRow();
+
+        int id = getSpecificItem(salleNom.getCellData(index).toString());
+
+        String query = "UPDATE `materiels`.`reservationsalle` SET `Nom` = '"+nom+"', `Date` = '"+date+"', `Nombresetudiant` = '"+qt+"' WHERE (`Id` = "+id+");";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            java.sql.Statement stmt = cnx.createStatement();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel modifier");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
+    }
+
+    public void updateTable(){
         getSalleList();
 
         salleNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         salleNombre.setCellValueFactory(new PropertyValueFactory<>("nombreEtudiant"));
         salleDate.setCellValueFactory(new PropertyValueFactory<>("reservation"));
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        updateTable();
     }
 }

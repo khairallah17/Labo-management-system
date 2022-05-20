@@ -44,7 +44,7 @@
                </font>
             </Button>
             <ComboBox fx:id="materielEtudiant" layoutX="10.0" layoutY="208.0" prefHeight="25.0" prefWidth="146.0" promptText="Materiels" />
-            <TableView fx:id="studentTable" layoutX="179.0" layoutY="131.0" prefHeight="183.0" prefWidth="301.0">
+            <TableView fx:id="studentTable" layoutX="179.0" layoutY="131.0" onMouseClicked="#getSelectedRow" prefHeight="183.0" prefWidth="301.0">
               <columns>
                 <TableColumn fx:id="nomStudent" prefWidth="36.0" text="Nom" />
                 <TableColumn fx:id="studentCard" prefWidth="56.0" text="carte" />
@@ -65,6 +65,8 @@
                   </ImageView>
                </graphic>
             </Button>
+            <Button layoutX="275.0" layoutY="340.0" mnemonicParsing="false" onAction="#modifieElement" prefHeight="30.0" prefWidth="85.0" style="-fx-background-color: #457B9D;" text="Modifier" textFill="WHITE" />
+            <Button layoutX="170.0" layoutY="340.0" mnemonicParsing="false" onAction="#deleteElement" prefHeight="30.0" prefWidth="85.0" style="-fx-background-color: #457B9D;" text="Supprimer" textFill="WHITE" />
          </children></AnchorPane>
   </items>
 </SplitPane>

@@ -76,7 +76,7 @@
                   </Button>
                   <TextField fx:id="fournisseurCIN" layoutX="20.0" layoutY="224.0" prefHeight="25.0" prefWidth="141.0" promptText="CIN" />
                   <TextField fx:id="fournisseurNumero" layoutX="20.0" layoutY="263.0" prefHeight="25.0" prefWidth="141.0" promptText="Numéro" />
-                  <TableView fx:id="fourniesseurTable" layoutX="183.0" layoutY="138.0" prefHeight="166.0" prefWidth="295.0">
+                  <TableView fx:id="fourniesseurTable" layoutX="183.0" layoutY="138.0" onMouseClicked="#getSelectedRow" prefHeight="166.0" prefWidth="295.0">
                     <columns>
                       <TableColumn fx:id="nomCompletTable" prefWidth="83.0" text="Nom Complet" />
                         <TableColumn fx:id="emailTable" prefWidth="82.0" text="Email" />
@@ -101,6 +101,8 @@
                         <Font name="Montserrat Bold" size="16.0" />
                      </font>
                   </Text>
+                  <Button fx:id="deleteElement" layoutX="257.0" layoutY="338.0" mnemonicParsing="false" onAction="#modifieElement" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #457B9D;" text="Modifier" textFill="WHITE" />
+                  <Button fx:id="modifieElement" layoutX="138.0" layoutY="338.0" mnemonicParsing="false" onAction="#deleteElement" prefHeight="29.0" prefWidth="90.0" style="-fx-background-color: #457B9D;" text="Supprimer" textFill="WHITE" />
                </children>
             </AnchorPane>
          </items>

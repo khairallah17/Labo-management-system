@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
 import javax.naming.spi.InitialContextFactory;
+import javax.swing.JOptionPane;
 
 import com.mysql.cj.xdevapi.Statement;
 
@@ -24,6 +25,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -79,6 +81,8 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>, Initial
     @FXML
     private TableColumn<Fournisseur, Integer> telTable;
 
+    MouseEvent event;
+
     @FXML
     protected void page(ActionEvent event, String ui) throws IOException {
         root = FXMLLoader.load(getClass().getResource(ui));
@@ -124,6 +128,32 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>, Initial
         }
     }
 
+    @FXML
+    public int getSelectedRow(){
+        int index = fourniesseurTable.getSelectionModel().getFocusedIndex();
+
+        if(index <= -1)
+            return 0;
+
+        fournisseurNomComplet.setText(nomCompletTable.getCellData(index));
+        fournisseurCIN.setText(cinTable.getCellData(index));
+        fournisseurEmail.setText(emailTable.getCellData(index));
+        fournisseurNumero.setText(telTable.getCellData(index).toString());
+
+        return index;
+    }
+
+    public int getSpecificItem(String nom){
+        ObservableList<Fournisseur> list = getFournisseurList();
+
+        for (Fournisseur fournisseur : list) {
+            if(fournisseur.getNomComplet().equals(nom))
+                return fournisseur.getId();
+        }
+
+        return 0;
+    }
+
     public void addFournisseur(){
         String nom = fournisseurNomComplet.getText();
         String cin = fournisseurCIN.getText();
@@ -138,9 +168,13 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>, Initial
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
             pstmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Fournisseur Ajouter");
+            clearTextFields();
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        updateTable();
     }
 
     public ObservableList<Fournisseur> getFournisseurList(){
@@ -155,7 +189,7 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>, Initial
             ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                list.add(new Fournisseur(rs.getString("NomComplet"), rs.getString("Email"), rs.getString("CIN"), rs.getInt("Numero")));
+                list.add(new Fournisseur(rs.getInt("Id"),rs.getString("NomComplet"), rs.getString("Email"), rs.getString("CIN"), rs.getInt("Numero")));
                 fourniesseurTable.setItems(list);
             }
 
@@ -166,14 +200,75 @@ public class ControllerFournisseur implements EventHandler<ActionEvent>, Initial
         return list;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // TODO Auto-generated method stub
+    public void modifieElement(){
+        String nom = fournisseurNomComplet.getText();
+        String email = fournisseurEmail.getText();
+        String cin = fournisseurCIN.getText();
+        int tel = Integer.parseInt(fournisseurNumero.getText());
+
+        int index = getSelectedRow();
+
+        int id = getSpecificItem(nomCompletTable.getCellData(index).toString());
+
+        String query = "UPDATE `materiels`.`fournisseur` SET `NomComplet` = '"+nom+"', `Email` = '"+email+"', `CIN` = '"+cin+"', `Numero` = '"+tel+"' WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            java.sql.Statement stmt = cnx.createStatement();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel modifier");
+            clearTextFields();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
+    }
+
+    public void clearTextFields(){
+        fournisseurCIN.setText("");
+        fournisseurNomComplet.setText("");
+        fournisseurNumero.setText("");
+        fournisseurEmail.setText("");
+    }
+
+    public void deleteElement(){
+        int index = getSelectedRow();
+
+        String nom = nomCompletTable.getCellData(index).toString();
+
+        int id = getSpecificItem(nom);
+
+        String query = "DELETE FROM `materiels`.`fournisseur` WHERE (`Id` = '"+id+"');";
+
+        try{
+            Connection cnx = DatabaseConnection.getConnection();
+            PreparedStatement pstmt = cnx.prepareStatement(query);
+
+            pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel Supprimer");
+            clearTextFields();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        updateTable();
+    }
+
+    public void updateTable(){
         getFournisseurList();
 
         nomCompletTable.setCellValueFactory(new PropertyValueFactory<>("nomComplet"));
         emailTable.setCellValueFactory(new PropertyValueFactory<>("email"));
         cinTable.setCellValueFactory(new PropertyValueFactory<>("cin"));
         telTable.setCellValueFactory(new PropertyValueFactory<>("tel"));
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // TODO Auto-generated method stub
+        updateTable();
     }
 }

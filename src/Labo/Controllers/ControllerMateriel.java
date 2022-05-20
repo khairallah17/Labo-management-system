@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+
 import Labo.DB.DatabaseConnection;
 import Labo.classes.Materiels;
 
@@ -53,9 +55,6 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
 
     @FXML
     private Button materielAjouter;
-    
-    @FXML
-    private TextField materielModule;
   
     @FXML
     private TextField materielNom;
@@ -118,6 +117,8 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
             pstmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Materiel Ajouter");
+            clearTextFields();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -195,6 +196,12 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         return 0;
     }
 
+    public void clearTextFields(){
+        materielNom.setText("");
+        materielReference.setText("");
+        materielNombre.setText("");
+    }
+
     public void deleteElement(){
         int index = getSelectedRow();
 
@@ -209,6 +216,8 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
             pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel Supprimer");
+            clearTextFields();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -217,21 +226,24 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
     }
 
     public void modifieElement(){
+        String nom = materielNom.getText();
+        String reference = materielReference.getText();
+        int qt = Integer.parseInt(materielNombre.getText());
+
         int index = getSelectedRow();
 
-        String nom = nameTable.getText();
-        String reference = materielReference.getText();
-        int quantite = Integer.parseInt(materielNombre.getText());
-        
-        int id = getSpecificItem(nom);
+        int id = getSpecificItem(nameTable.getCellData(index).toString());
 
-        String query = "UPDATE `materiels`.`materiel` SET `Nom` = '"+nom+"', `Reference` = '"+reference+"', `Quantite` = '"+quantite+"', `Status` = 'disponible' WHERE (`Id` = '"+id+"');";
+        String query = "UPDATE `materiels`.`materiel` SET `Nom` = '"+nom+"', `Reference` = '"+reference+"', `Quantite` = '"+qt+"', `Status` = 'disponible' WHERE (`Id` = "+id+");";
 
         try{
             Connection cnx = DatabaseConnection.getConnection();
+            Statement stmt = cnx.createStatement();
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
             pstmt.execute();
+            JOptionPane.showMessageDialog(null, "Materiel modifier");
+            clearTextFields();
         }catch(Exception e){
             e.printStackTrace();
         }

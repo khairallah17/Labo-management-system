@@ -3,6 +3,7 @@ package Labo.classes;
 import java.sql.Date;
 
 public class Reservation {
+    int id;
     String nom;
     String cin;
     String materiel;
@@ -10,6 +11,7 @@ public class Reservation {
     Date dateFin;
 
     public Reservation(){
+        this.id = 0;
         this.nom = null;
         this.cin = null;
         this.materiel = null;
@@ -17,12 +19,17 @@ public class Reservation {
         this.dateFin = null;
     }
 
-    public Reservation(String nom, String cin, String materiel, Date dateDebut, Date dateFin){
+    public Reservation(int id, String nom, String cin, String materiel, Date dateDebut, Date dateFin){
+        this.id = id;
         this.nom = nom;
         this.cin = cin;
         this.materiel = materiel;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setCin(String cin) {
@@ -43,6 +50,10 @@ public class Reservation {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getCin() {

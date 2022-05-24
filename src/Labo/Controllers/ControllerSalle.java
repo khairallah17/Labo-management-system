@@ -165,8 +165,12 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
             java.sql.Statement stmt = cnx.createStatement();
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
-            pstmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "salle reserver");
+            if(checkDoubles(date)){
+                pstmt.execute();
+                JOptionPane.showMessageDialog(null, "salle reserver avec succes");
+            }else{
+                JOptionPane.showMessageDialog(null, "salle non disponnible pour cette date"); 
+            }
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -221,6 +225,20 @@ public class ControllerSalle implements EventHandler<ActionEvent>, Initializable
 
        
         updateTable();
+    }
+
+    public boolean checkDoubles(LocalDate date){
+        ObservableList<Salle> list = getSalleList();
+
+        String res = date.toString();
+
+        for (Salle salle : list) {
+            String rs = salle.getReservation().toString();
+            if(rs.equals(res))
+                return false;
+        }
+
+        return true;
     }
 
     public void modifieElement(){

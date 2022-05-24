@@ -116,8 +116,12 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
             Statement stmt = cnx.createStatement();
             PreparedStatement pstmt = cnx.prepareStatement(query);
 
-            pstmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Materiel Ajouter");
+            if(checkDoubles(nom)){
+                pstmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Materiel Ajouter");
+            }else{
+                JOptionPane.showMessageDialog(null, "Materiel existe deja");
+            }
             clearTextFields();
         }catch(Exception e){
             e.printStackTrace();
@@ -200,6 +204,16 @@ public class ControllerMateriel implements EventHandler<ActionEvent>, Initializa
         materielNom.setText("");
         materielReference.setText("");
         materielNombre.setText("");
+    }
+
+    public boolean checkDoubles(String nom){
+        ObservableList<Materiels> list = getMaterielList();
+         for (Materiels materiels : list) {
+             if(materiels.getNom().equalsIgnoreCase(nom))
+                return false;
+         }
+
+         return true;
     }
 
     public void deleteElement(){
